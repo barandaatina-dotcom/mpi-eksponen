@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sembada EduTour - Wisata Edukasi & Budaya Sleman</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sleman: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        amberGold: {
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome Icons & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .hero-pattern {
+            background-color: #14532d;
+            background-image: radial-gradient(#22c55e 0.8px, transparent 0.8px), radial-gradient(#22c55e 0.8px, #14532d 0.8px);
+            background-size: 32px 32px;
+            background-position: 0 0, 16px 16px;
+        }
+
+        /* Soundwave animation for active AI speaking */
+        .wave-bar {
+            display: inline-block;
+            width: 3px;
+            height: 12px;
+            background-color: #16a34a;
+            border-radius: 3px;
+            animation: soundWave 1s infinite ease-in-out;
+        }
+        .wave-bar:nth-child(1) { animation-delay: 0.0s; }
+        .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.4s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.1s; }
+
+        @keyframes soundWave {
+            0%, 100% { height: 6px; }
+            50% { height: 18px; }
+        }
+    </style>
+</head>
+<body class="h-full text-slate-800 antialiased flex flex-col custom-scrollbar">
+
+    <!-- Header & Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 gap-2 sm:gap-4">
+                <!-- Logo Brand -->
+                <div class="flex items-center gap-2.5 cursor-pointer" onclick="filterCategory('all')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sleman-800 to-emerald-600 flex items-center justify-center text-white shadow-md shadow-sleman-900/20">
+                        <i class="fa-solid fa-mountain-sun text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight block leading-none">Sembada <span class="text-sleman-600">EduTour</span></span>
+                        <span class="text-[10px] font-semibold text-slate-500 uppercase tracking-widest block mt-0.5">Wisata & Budaya Sleman</span>
+                    </div>
+                </div>
+
+                <!-- Navigasi & Search Bar Desktop -->
+                <div class="hidden md:flex items-center gap-4 flex-1 max-w-md mx-4">
+                    <div class="relative w-full">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Cari museum, tradisi, atau aturan kunjungan..." class="w-full pl-10 pr-4 py-2 bg-slate-100 focus:bg-white text-sm rounded-full border border-transparent focus:border-sleman-600 focus:outline-none transition-all">
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-2">
+                    <button onclick="openQuizModal()" class="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-amber-800 bg-amber-100 hover:bg-amber-200 rounded-xl border border-amber-300/60 transition-all">
+                        <i class="fa-solid fa-award text-amber-600"></i>
+                        <span class="hidden sm:inline">Kuis Acak</span>
+                    </button>
+                    
+                    <button onclick="openItineraryModal()" class="relative flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-700 hover:text-sleman-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all">
+                        <i class="fa-solid fa-route text-sleman-600"></i>
+                        <span class="hidden sm:inline">Rencana</span>
+                        <span id="itineraryBadge" class="bg-sleman-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">0</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Search Bar -->
+            <div class="pb-3 md:hidden">
+                <div class="relative w-full">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" oninput="handleSearch(this.value)" placeholder="Cari museum, tradisi, larangan..." class="w-full pl-9 pr-4 py-1.5 bg-slate-100 text-xs rounded-full border border-transparent focus:border-sleman-600 focus:outline-none">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Header Banner -->
+    <section class="hero-pattern text-white py-8 sm:py-10 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="max-w-2xl">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-200 border border-emerald-400/30 mb-3">
+                        <i class="fa-solid fa-robot text-amber-400"></i> Pemandu Wisata Edukasi Suara AI
+                    </span>
+                    <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
+                        Panduan Edukasi, Pengertian & Aturan Kunjungan
+                    </h1>
+                    <p class="mt-2 text-xs sm:text-sm text-emerald-100/90 leading-relaxed">
+                        Temukan pengertian singkat, tata cara kunjungan, aturan & larangan sakral, lokasi Kapanewon, serta narasi panduan audio suara AI untuk seluruh warisan budaya Kabupaten Sleman.
+                    </p>
+                </div>
+                
+                <!-- Quick Statistics -->
+                <div class="grid grid-cols-3 gap-3 w-full md:w-auto bg-sleman-900/60 p-3 rounded-2xl border border-sleman-700/50 backdrop-blur-sm">
+                    <div class="text-center px-2">
+                        <span class="block text-xl font-extrabold text-amber-400" id="statMuseum">6</span>
+                        <span class="text-[11px] text-emerald-200 font-medium">Museum</span>
+                    </div>
+                    <div class="text-center px-2 border-x border-sleman-700/60">
+                        <span class="block text-xl font-extrabold text-amber-400" id="statTradisi">5</span>
+                        <span class="text-[11px] text-emerald-200 font-medium">Tradisi</span>
+                    </div>
+                    <div class="text-center px-2">
+                        <span class="block text-xl font-extrabold text-amber-400" id="statUpacara">3</span>
+                        <span class="text-[11px] text-emerald-200 font-medium">Upacara</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="bg-white border-b border-slate-200 sticky top-16 z-30 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <!-- Category Tabs -->
+                <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 sm:pb-0" id="categoryTabs">
+                    <button onclick="filterCategory('all')" id="tab-all" class="category-btn active px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap bg-sleman-800 text-white shadow-sm transition-all">
+                        <i class="fa-solid fa-shapes mr-1"></i> Semua Koleksi
+                    </button>
+                    <button onclick="filterCategory('museum')" id="tab-museum" class="category-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all">
+                        <i class="fa-solid fa-building-columns mr-1 text-sleman-600"></i> Museum Edukasi
+                    </button>
+                    <button onclick="filterCategory('tradisi')" id="tab-tradisi" class="category-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all">
+                        <i class="fa-solid fa-people-roof mr-1 text-amber-600"></i> Tradisi Lokal
+                    </button>
+                    <button onclick="filterCategory('upacara')" id="tab-upacara" class="category-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all">
+                        <i class="fa-solid fa-fire-burner mr-1 text-rose-600"></i> Upacara Adat
+                    </button>
+                </div>
+
+                <!-- Kapanewon District Filter -->
+                <div class="flex items-center gap-2 shrink-0">
+                    <label for="kapanewonFilter" class="text-xs font-semibold text-slate-500 whitespace-nowrap">
+                        <i class="fa-solid fa-location-dot text-sleman-600"></i> Kapanewon:
+                    </label>
+                    <select id="kapanewonFilter" onchange="filterKapanewon(this.value)" class="bg-slate-100 border border-slate-200 text-slate-700 text-xs rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-sleman-600 font-medium">
+                        <option value="all">Semua Wilayah</option>
+                        <option value="Pakem">Pakem</option>
+                        <option value="Depok">Depok</option>
+                        <option value="Gamping">Gamping</option>
+                        <option value="Prambanan">Prambanan</option>
+                        <option value="Seyegan">Seyegan</option>
+                        <option value="Ngemplak">Ngemplak</option>
+                        <option value="Cangkringan">Cangkringan</option>
+                        <option value="Mlati">Mlati</option>
+                        <option value="Ngaglik">Ngaglik</option>
+                        <option value="Turi">Turi</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <!-- Results Info & View Switcher -->
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <h2 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2" id="sectionTitle">
+                    <span>Semua Wisata Edukasi & Budaya</span>
+                </h2>
+                <p class="text-xs text-slate-500" id="resultCount">Menampilkan seluruh materi dari basis data Sleman</p>
+            </div>
+            
+            <div class="flex items-center gap-1 bg-slate-200/60 p-1 rounded-xl">
+                <button onclick="toggleView('grid')" id="btnGrid" class="p-1.5 rounded-lg bg-white text-sleman-700 shadow-xs text-xs">
+                    <i class="fa-solid fa-grip"></i>
+                </button>
+                <button onclick="toggleView('list')" id="btnList" class="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 text-xs">
+                    <i class="fa-solid fa-list"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Cards Container -->
+        <div id="cardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dynamic Content -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 my-6">
+            <div class="w-16 h-16 mx-auto bg-amber-50 rounded-full flex items-center justify-center text-amber-500 mb-3 text-2xl">
+                <i class="fa-solid fa-magnifying-glass-location"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-800">Data Tidak Ditemukan</h3>
+            <p class="text-xs text-slate-500 max-w-sm mx-auto mt-1">Tidak ada museum, tradisi, atau aturan yang cocok dengan kata kunci atau filter Anda.</p>
+            <button onclick="resetSearch()" class="mt-4 px-4 py-2 bg-sleman-700 text-white rounded-xl text-xs font-semibold hover:bg-sleman-800 transition-all">
+                Tampilkan Semua Data
+            </button>
+        </div>
+    </main>
+
+    <!-- Detail Modal with AI Audio Player -->
+    <div id="detailModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col custom-scrollbar relative">
+            
+            <!-- Modal Header Banner -->
+            <div id="modalHeaderBg" class="p-6 bg-gradient-to-r from-sleman-900 to-emerald-800 text-white relative">
+                <button onclick="closeDetailModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center text-sm transition-all">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div id="modalCategoryBadge" class="inline-block px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-500 text-white mb-2">
+                    Museum
+                </div>
+                <h2 id="modalTitle" class="text-xl sm:text-2xl font-extrabold pr-8">Nama Wisata</h2>
+                <p id="modalLocation" class="text-xs text-emerald-200 mt-1 flex items-center gap-1.5">
+                    <i class="fa-solid fa-location-dot"></i> <span>Lokasi</span>
+                </p>
+            </div>
+
+            <!-- Modal Content Body -->
+            <div class="p-6 space-y-5 text-slate-700 text-xs sm:text-sm">
+                <!-- AI Audio Guide Player Control Box -->
+                <div class="bg-gradient-to-br from-sleman-900 to-slate-900 text-white p-4 rounded-2xl border border-sleman-700/50 shadow-md">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-9 h-9 rounded-xl bg-sleman-600/30 border border-sleman-400/30 text-amber-400 flex items-center justify-center text-base">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div>
+                                <span class="font-extrabold text-amber-400 text-xs block">Pemandu Tur AI Suara Bahasa Indonesia</span>
+                                <span class="text-[10px] text-slate-300">Panduan audio resmi museum & tradisi Sleman</span>
+                            </div>
+                        </div>
+
+                        <!-- Animated Soundwave Indicator -->
+                        <div id="audioWaveVisualizer" class="hidden flex items-center gap-1 bg-sleman-800/80 px-2.5 py-1 rounded-full border border-sleman-600/40">
+                            <span class="wave-bar"></span>
+                            <span class="wave-bar"></span>
+                            <span class="wave-bar"></span>
+                            <span class="wave-bar"></span>
+                            <span class="text-[10px] text-emerald-300 font-bold ml-1">AI Speaking</span>
+                        </div>
+                    </div>
+
+                    <!-- Voice Guide Controls -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-sleman-800">
+                        <div class="flex items-center gap-2">
+                            <button id="btnAudioSpeak" onclick="toggleAudioSpeak()" class="px-4 py-2 bg-sleman-600 hover:bg-sleman-500 active:bg-sleman-700 text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-all shadow-sm">
+                                <i class="fa-solid fa-play"></i> <span id="btnAudioLabel">Putar Tur AI</span>
+                            </button>
+                            <button id="btnAudioPause" onclick="pauseResumeAudio()" class="hidden px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all">
+                                <i class="fa-solid fa-pause"></i> <span>Jeda</span>
+                            </button>
+                            <button id="btnAudioStop" onclick="stopAudioSpeak()" class="hidden px-3 py-2 bg-rose-900/60 hover:bg-rose-800/80 text-rose-200 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all">
+                                <i class="fa-solid fa-stop"></i> <span>Stop</span>
+                            </button>
+                        </div>
+
+                        <!-- Speed Controls -->
+                        <div class="flex items-center gap-1 bg-slate-800/80 px-2 py-1 rounded-xl text-[11px]">
+                            <span class="text-slate-400 font-medium mr-1"><i class="fa-solid fa-gauge-high"></i> Speed:</span>
+                            <button onclick="setAudioRate(0.85)" id="rate08" class="px-1.5 py-0.5 rounded text-slate-300 hover:text-white">0.8x</button>
+                            <button onclick="setAudioRate(1.0)" id="rate10" class="px-1.5 py-0.5 rounded bg-sleman-600 font-bold text-white">1.0x</button>
+                            <button onclick="setAudioRate(1.2)" id="rate12" class="px-1.5 py-0.5 rounded text-slate-300 hover:text-white">1.2x</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Brief Overview / Definition -->
+                <div class="bg-sleman-50/80 border border-sleman-200/80 p-3.5 rounded-xl">
+                    <h4 class="font-bold text-sleman-900 mb-1 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-lightbulb text-sleman-600"></i> Pengertian Singkat
+                    </h4>
+                    <p id="modalShortDesc" class="text-xs sm:text-sm text-sleman-800 font-medium leading-relaxed"></p>
+                </div>
+
+                <!-- Rules and Restrictions Section -->
+                <div id="modalRulesContainer" class="bg-amber-50/80 border border-amber-200/90 p-3.5 rounded-xl">
+                    <h4 class="font-bold text-amber-900 mb-1.5 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Aturan & Larangan Kunjungan
+                    </h4>
+                    <p id="modalRules" class="text-xs text-amber-900 leading-relaxed whitespace-pre-line"></p>
+                </div>
+
+                <!-- Main Narrative & History -->
+                <div>
+                    <h4 class="font-bold text-slate-900 mb-1.5 text-xs uppercase tracking-wider text-sleman-800 border-b border-slate-100 pb-1 flex items-center gap-1">
+                        <i class="fa-solid fa-book-open text-sleman-600"></i> Sejarah & Deskripsi Lengkap
+                    </h4>
+                    <p id="modalDescription" class="leading-relaxed text-slate-600 whitespace-pre-line text-xs sm:text-sm"></p>
+                </div>
+
+                <!-- Collections / Procession Section -->
+                <div id="modalCollectionContainer" class="hidden">
+                    <h4 class="font-bold text-slate-900 mb-1.5 text-xs uppercase tracking-wider text-sleman-800 border-b border-slate-100 pb-1 flex items-center gap-1">
+                        <i class="fa-solid fa-layer-group text-sleman-600"></i> Rangkaian / Koleksi Pameran
+                    </h4>
+                    <div id="modalCollections" class="text-xs text-slate-600 leading-relaxed whitespace-pre-line"></div>
+                </div>
+            </div>
+
+            <!-- Modal Footer Actions -->
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <button id="btnItineraryToggle" onclick="toggleItineraryFromModal()" class="px-3.5 py-2 bg-sleman-100 hover:bg-sleman-200 text-sleman-800 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-plus"></i> <span>Tambah Rencana</span>
+                    </button>
+                    <a id="btnGmapsModal" href="#" target="_blank" class="px-3.5 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-diamond-turn-right"></i> <span>Google Maps</span>
+                    </a>
+                </div>
+                <button onclick="closeDetailModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-xl text-xs transition-all">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Itinerary Modal -->
+    <div id="itineraryModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6">
+        <div class="bg-white rounded-2xl max-w-lg w-full max-h-[85vh] overflow-hidden shadow-2xl flex flex-col">
+            <div class="p-4 bg-slate-900 text-white flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-route text-amber-400"></i>
+                    <h3 class="font-extrabold text-sm sm:text-base">Rencana Kunjungan Wisata Edukasi</h3>
+                </div>
+                <button onclick="closeItineraryModal()" class="text-slate-400 hover:text-white text-base">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="p-4 flex-1 overflow-y-auto custom-scrollbar space-y-3" id="itineraryListContainer">
+                <!-- Dynamic itinerary items -->
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-2">
+                <button onclick="clearItinerary()" class="text-xs text-rose-600 hover:text-rose-800 font-semibold px-2 py-1">
+                    Hapus Semua
+                </button>
+                <div class="flex gap-2">
+                    <button onclick="openMultiGmapsRoute()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl flex items-center gap-1">
+                        <i class="fa-solid fa-map-location-dot"></i> Rute Maps
+                    </button>
+                    <button onclick="copyItineraryText()" class="px-3 py-2 bg-sleman-700 hover:bg-sleman-800 text-white font-bold text-xs rounded-xl flex items-center gap-1">
+                        <i class="fa-solid fa-copy"></i> Salin Teks
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cultural Quiz Modal -->
+    <div id="quizModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden flex flex-col">
+            <div class="p-4 bg-gradient-to-r from-amber-600 to-amber-700 text-white flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-award text-amber-200 text-lg"></i>
+                    <h3 class="font-extrabold text-sm">Kuis Budaya & Aturan Sleman</h3>
+                </div>
+                <button onclick="closeQuizModal()" class="text-amber-200 hover:text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-5 flex-1 overflow-y-auto" id="quizBody">
+                <div class="flex justify-between items-center text-xs text-slate-500 font-bold mb-2">
+                    <span id="quizProgress">Pertanyaan 1 dari 5</span>
+                    <span id="quizScore" class="text-sleman-700">Skor: 0</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 mb-4">
+                    <div id="quizProgressBar" class="bg-amber-500 h-1.5 rounded-full w-1/5 transition-all"></div>
+                </div>
+
+                <h4 id="quizQuestion" class="font-bold text-slate-900 text-sm mb-4 leading-snug">
+                    Soal Kuis
+                </h4>
+
+                <div id="quizOptions" class="space-y-2">
+                    <!-- Option buttons dynamically generated -->
+                </div>
+
+                <div id="quizFeedback" class="mt-4 p-3 rounded-xl text-xs hidden leading-relaxed"></div>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+                <button id="btnNextQuiz" onclick="nextQuestion()" class="hidden px-4 py-2 bg-sleman-700 text-white font-bold text-xs rounded-xl">
+                    Lanjut Soal <i class="fa-solid fa-arrow-right ml-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        /*
+         * Database for Sleman EduTour
+         */
+        const edutourData = [
+            // TRADISI LOKAL
+            {
+                id: 'BEKAKAK',
+                category: 'tradisi',
+                categoryLabel: 'Tradisi Lokal',
+                kapanewon: 'Gamping',
+                title: 'Upacara Adat Bekakak',
+                location: 'Ambarketawang, Gamping, Sleman, Yogyakarta',
+                lat: -7.7975,
+                lng: 110.3255,
+                shortDesc: 'Upacara adat berupa penyembelihan pengantin tiruan dari tepung ketan berisi cairan gula jawa merah sebagai simbol penghormatan dan doa keselamatan.',
+                rules: `1. Dilarang merusak atau membuang sampah sembarangan di sepanjang rute kirab Ambarketawang.
+2. Dilarang berebut tiruan bekakak sebelum ritual penyembelihan selesai dipimpin oleh pemangku adat.
+3. Tetap berada di luar batas aman garis barisan bergada dan jodang pengantin.`,
+                fullDesc: `Upacara Adat Bekakak berarti korban penyembelihan. Dalam tradisi unik ini, "korban" yang disembelih bukanlah manusia atau hewan, melainkan boneka tiruan sepasang pengantin yang terbuat dari tepung ketan yang diisi cairan juruh (gula jawa merah).
+
+Kirab Budaya: Sepasang bekakak diarak bersama gunungan hasil bumi, prajurit bergada, dan kesenian rakyat.
+Penyembelihan Simbolis: Dilakukan di Gunung Gamping sebagai wujud penolakan bala serta pengingat sejarah Kyai dan Nyai Wirosuto.`,
+                badgeBg: 'bg-amber-600'
+            },
+            {
+                id: 'WONOLELO',
+                category: 'tradisi',
+                categoryLabel: 'Tradisi Lokal',
+                kapanewon: 'Ngemplak',
+                title: 'Saparan Wonolelo',
+                location: 'Widodomartani, Ngemplak, Sleman, Yogyakarta',
+                lat: -7.6981,
+                lng: 110.4392,
+                shortDesc: 'Tradisi syukuran tahunan di Dusun Pondok Wonolelo untuk mengenang Ki Ageng Wonolelo dengan puncaknya berupa ritual Sebar Apem.',
+                rules: `1. Bersikap tertib dan saling menjaga keselamatan saat acara Sebar Apem (utamakan anak-anak dan lansia).
+2. Mengenakan pakaian yang sopan saat memasuki area pelataran Makam Ki Ageng Wonolelo.
+3. Menjaga kebersihan dan ketenangan di sekitar komplek tempat ibadah dan makam sakral.`,
+                fullDesc: `Upacara adat tahunan di Dusun Pondok Wonolelo, Kapanewon Ngemplak, untuk mengenang jasa Ki Ageng Wonolelo sebagai penyebar agama Islam.
+
+Sebar Apem: Ribuan warga berkumpul berebut kue apem (dari kata Arab 'Afuwun' yang bermakna pengampunan) yang disebar dari atas menara tinggi sebagai simbol sedekah dan rasa syukur.`,
+                badgeBg: 'bg-amber-600'
+            },
+            {
+                id: 'WIWITAN',
+                category: 'tradisi',
+                categoryLabel: 'Tradisi Lokal',
+                kapanewon: 'Seyegan',
+                title: 'Tradisi Wiwitan Panen Padi',
+                location: 'Lahan Pertanian Kabupaten Sleman & DIY',
+                lat: -7.7289,
+                lng: 110.2988,
+                shortDesc: 'Upacara adat syukur masyarakat petani Jawa sebelum memotong tanaman padi sebagai penghormatan kepada Dewi Sri (Dewi Kesuburan).',
+                rules: `1. Dilarang menginjak-injak rumpun tanaman padi di luar batas jalan setapak sawah.
+2. Mengikuti prosesi doa bersama (kenduri) dengan tenang dan penuh rasa hormat.
+3. Bersama-sama menikmati hidangan sego gurih secara tertib pada sesi Kembul Bujana.`,
+                fullDesc: `Tradisi wiwitan berasal dari kata 'wiwit' (mulai). Ritual ini dilakukan tepat sebelum masa panen raya padi dimulai.
+
+Prosesi: Petani menyiapkan ubarampe sesaji berupa nasi gurih, sambal gepeng, ayam panggang kampung, dan telur rebus. Setelah doa dipimpin oleh Mbah Kaum, beberapa tangkai padi pertama dipotong secara simbolis.`,
+                badgeBg: 'bg-amber-600'
+            },
+            {
+                id: 'MERTI_DESA',
+                category: 'tradisi',
+                categoryLabel: 'Tradisi Lokal',
+                kapanewon: 'Pakem',
+                title: 'Merti Desa / Bersih Desa',
+                location: 'Padukuhan & Kalurahan se-Kabupaten Sleman',
+                lat: -7.6651,
+                lng: 110.4211,
+                shortDesc: 'Upacara syukuran wilayah usai panen raya atau peringatan hari jadi kalurahan melalui kirab gunungan hasil bumi dan kenduri.',
+                rules: `1. Dilarang mengambil atau merebut isi gunungan sebelum doa ucapan syukur selesai dibacakan.
+2. Dilarang membuang sampah sisa makanan/kemasan di area balai desa atau lokasi pertunjukan.
+3. Mematuhi aturan tata tertib lalu lintas selama kirab budaya berlangsung.`,
+                fullDesc: `Merti Desa merupakan manifestasi rasa gotong royong dan syukur masyarakat atas kelimpahan rezeki bumi dan kesehatan warga desa.
+
+Kegiatan: Meliputi kirab gunungan hasil bumi, kenduri makan bersama (kembul buceng), dan pementasan seni tradisional seperti wayang kulit atau karawitan.`,
+                badgeBg: 'bg-amber-600'
+            },
+            {
+                id: 'DADUNG_AWUK',
+                category: 'tradisi',
+                categoryLabel: 'Tradisi Lokal',
+                kapanewon: 'Depok',
+                title: 'Kesenian Dadung Awuk',
+                location: 'Sleman, Daerah Istimewa Yogyakarta',
+                lat: -7.7658,
+                lng: 110.3881,
+                shortDesc: 'Kesenian teater rakyat dramatari tradisional perkembangan dari teater Srandul yang menceritakan kisah raksasa gembala kerbau Dadung Awuk.',
+                rules: `1. Dilarang menaiki area arena pertunjukan teater saat pementasan berlangsung.
+2. Dilarang menyalakan suar, petasan, atau suara gaduh yang mengganggu keheningan pertunjukan.
+3. Mengapresiasi para seniman dengan tertib.`,
+                fullDesc: `Dadung Awuk adalah dramatari teater rakyat khas Sleman. Tokoh utamanya adalah Dadung Awuk, raksasa kerdil penjaga kerbau ciptaan Bathari Durga. Pertunjukan memadukan unsur seni peran, seni tari Jawa, dan alunan irama musik tradisional.`,
+                badgeBg: 'bg-amber-600'
+            },
+
+            // UPACARA ADAT
+            {
+                id: 'LABUHAN_MERAPI',
+                category: 'upacara',
+                categoryLabel: 'Upacara Adat',
+                kapanewon: 'Cangkringan',
+                title: 'Labuhan Ageng Merapi',
+                location: 'Pos Sri Manganti, Gunung Merapi, Cangkringan, Sleman',
+                lat: -7.5812,
+                lng: 110.4468,
+                shortDesc: 'Upacara sakral Keraton Yogyakarta di lereng Gunung Merapi untuk memohon keselamatan, ketentraman, dan keseimbangan alam.',
+                rules: `1. DILARANG memakai baju berwarna hijau muda gadung (warna kain terlarang dalam tradisi keraton).
+2. Dilarang membuang sampah sembarangan di sepanjang jalur sakral pendakian Sri Manganti Merapi.
+3. Dilarang mengganggu atau menyentuh wadah uborampe saat diarak oleh para Abdi Dalem.`,
+                fullDesc: `Labuhan Ageng Merapi digelar rutin oleh Keraton Yogyakarta sebagai penghormatan terhadap alam sekitar serta mengenang sejarah Gunung Merapi.
+
+Prosesi: Penyerahan kain uborampe keraton (seperti nyamping cangkring dan semekan) yang dilanjutkan dengan doa selamatan dan pembagian berkah labuhan.`,
+                badgeBg: 'bg-rose-600'
+            },
+            {
+                id: 'TUK_SI_BEDUG',
+                category: 'upacara',
+                categoryLabel: 'Upacara Adat',
+                kapanewon: 'Seyegan',
+                title: 'Upacara Adat Tuk Si Bedug',
+                location: 'Margodadi, Seyegan, Sleman, Yogyakarta',
+                lat: -7.7311,
+                lng: 110.2921,
+                shortDesc: 'Upacara penghormatan karomah Sunan Kalijaga yang memancarkan mata air (tuk) saat dentang bedug penanda waktu salat berbunyi.',
+                rules: `1. Dilarang mencemari, mengobaki, atau membuang sampah di area kolam mata air sakral.
+2. Menjaga sopan santun dan tutur kata selama berada di petilasan Sunan Kalijaga.
+3. Mematuhi arahan Juru Kunci dan sesepuh adat Seyegan.`,
+                fullDesc: `Menurut legenda, Sunan Kalijaga menancapkan tongkatnya ke tanah untuk mencari air wudhu saat mendengar dentang bedug. Secara ajaib, memancarlah mata air jernih yang dinamakan Tuk Si Bedug.
+
+Rangkaian: Pengambilan air suci dengan periuk, kirab gunungan wulu wetu, dan kenduri bersama.`,
+                badgeBg: 'bg-rose-600'
+            },
+            {
+                id: 'SIKLUS_HIDUP',
+                category: 'upacara',
+                categoryLabel: 'Upacara Adat',
+                kapanewon: 'Depok',
+                title: 'Tradisi Siklus Hidup Jawa',
+                location: 'Kabupaten Sleman & D.I. Yogyakarta',
+                lat: -7.7712,
+                lng: 110.3905,
+                shortDesc: 'Rangkaian ritual adat Jawa yang menandai tahapan penting kehidupan: Mitoni (7 bulan kehamilan), Tedhak Siten (menapak tanah), hingga Nyewu.',
+                rules: `1. Memahami tata urutan ritual secara khidmat (siraman kembang, meniti jadah 7 warna, kurungan).
+2. Dilarang bersikap tidak sopan atau tertawa berlebihan saat doa ritual keluarga berlangsung.
+3. Menjaga kebersihan dan kerapian tempat acara ritual.`,
+                fullDesc: `Siklus Hidup Jawa melambangkan ungkapan doa rasa syukur serta permohonan keselamatan di setiap fase kehidupan:
+- Mitoni: Ritual 7 bulan kehamilan.
+- Tedhak Siten: Pertama kali anak melangkah menapakkan kaki ke bumi (usia 8 bulan Jawa).
+- Nyewu: Selamatan peringatan 1000 hari bagi mendiang.`,
+                badgeBg: 'bg-rose-600'
+            },
+
+            // MUSEUM EDUKASI
+            {
+                id: 'MGM',
+                category: 'museum',
+                categoryLabel: 'Museum Edukasi',
+                kapanewon: 'Pakem',
+                title: 'Museum Gunungapi Merapi (MGM)',
+                location: 'Hargobinangun, Pakem, Sleman, Yogyakarta',
+                lat: -7.6162,
+                lng: 110.4243,
+                shortDesc: 'Pusat edukasi vulkanologi, simulasi kebencanaan geologi, dan rekam jejak sejarah erupsi Gunung Merapi berbentuk piramida gagah.',
+                rules: `1. Dilarang makan, minum, atau merokok di dalam ruang galeri pameran museum.
+2. Dilarang merusak atau memanjat instrumen simulasi dan benda koleksi museum.
+3. Menjaga ketertiban dan ketenangan selama menonton film di ruang teater audio-visual.`,
+                fullDesc: `Museum Gunungapi Merapi merupakan wahana edukasi kebumian dan vulkanologi modern.
+
+Koleksi Pameran: Maket Gunung Merapi yang dapat mengeluarkan suara erupsi dan lelehan lava simulasi, sisa barang berharga korban erupsi 2010, serta alat pemantau seismograf geologi.`,
+                badgeBg: 'bg-sleman-700'
+            },
+            {
+                id: 'ULLEN_SENTALU',
+                category: 'museum',
+                categoryLabel: 'Museum Edukasi',
+                kapanewon: 'Pakem',
+                title: 'Museum Ullen Sentalu',
+                location: 'Jl. Boyong, Kaliurang, Pakem, Sleman',
+                lat: -7.5978,
+                lng: 110.4231,
+                shortDesc: 'Museum seni dan budaya peradaban Keraton Mataram di lereng Kaliurang dengan arsitektur menawan terpadu dengan alam hijau.',
+                rules: `1. DILARANG MENGAMBIL FOTO / VIDEO di seluruh ruang galeri dalam museum (Foto hanya diizinkan di spot outdoor tertentu).
+2. Wajib mengikuti tur bersama edukator museum resmi.
+3. Dilarang menyentuh koleksi lukisan, kain batik bersejarah, dan artefak keraton.`,
+                fullDesc: `Museum Ullen Sentalu menyajikan kisah kejayaan seni, busana batik, dan kebudayaan para putri Keraton Mataram (Yogyakarta & Surakarta).
+
+Daya Tarik: Galeri Selamat Datang, Ruang Batik Gurdo, dan arsitektur gothic unik berbatu candi yang menyatu harmonis dengan hutan Kaliurang.`,
+                badgeBg: 'bg-sleman-700'
+            },
+            {
+                id: 'MUSPUSDIRLA',
+                category: 'museum',
+                categoryLabel: 'Museum Edukasi',
+                kapanewon: 'Depok',
+                title: 'Muspusdirla TNI AU Dirgantara Mandala',
+                location: 'Maguwoharjo, Depok, Sleman, Yogyakarta',
+                lat: -7.7843,
+                lng: 110.4172,
+                shortDesc: 'Museum alutsista udara purnatugas terbesar di Indonesia peninggalan perjuangan TNI Angkatan Udara.',
+                fullDesc: `Museum Pusat TNI AU Dirgantara Mandala (Muspusdirla) merupakan museum militer resmi pengelola koleksi pesawat tempur, rudal, dan radar terbesar di Indonesia. Menempati hangar raksasa bekas pabrik gula kolonial di Lanud Adisutjipto.`,
+                rules: `1. Dilarang menaiki sayap atau memanjat badan pesawat.
+2. Wisatawan asing wajib melapor dan melalui verifikasi dokumen di pos penjagaan Lanud.
+3. Dilarang membawa drone atau kamera komersial tanpa izin khusus militer.
+4. Museum tutup setiap hari Jumat untuk pemeliharaan alutsista (maintenance day).`,
+                collections: `- Pesawat Tempur WEL-I RI-X (1948): Pesawat pertama buatan putra bangsa Indonesia.
+- Pesawat Cureng (1945): Pesawat latih peninggalan Jepang.
+- Jet Tempur Cold War: Armada jet tempur Blok Timur seperti MiG-15, MiG-17, dan MiG-21.
+- Pesawat Dakota VT-CLA: Puing sejarah pengangkut obat-obatan yang tertembak jatuh di Ngotho.`,
+                badgeBg: 'bg-sleman-700'
+            },
+            {
+                id: 'MUGESA',
+                category: 'museum',
+                categoryLabel: 'Museum Edukasi',
+                kapanewon: 'Pakem',
+                title: 'Museum Gempa MUGESA',
+                location: 'Kaliurang, Pakem, Sleman, Yogyakarta',
+                lat: -7.5982,
+                lng: 110.4235,
+                shortDesc: 'Museum edukasi sains interaktif & simulasi mitigasi bencana gempa bumi untuk umum dan pelajar.',
+                fullDesc: `Museum Gempa MUGESA menyelenggarakan pembelajaran sains, edukatif, dan interaktif yang dikemas secara kreatif untuk segala usia melalui permainan, nyanyian simulasi, dan presentasi mitigasi bencana gempa bumi.`,
+                rules: `1. Dilarang merusak alat peraga simulasi gempa.
+2. Dilarang memisahkan diri saat simulasi darurat berkelompok.
+3. Dilarang membuang sampah sembarangan.`,
+                collections: `- Foto dokumenter orisinil pasca Gempa Yogyakarta 2006.
+- Alat peraga simulasi guncangan gempa bumi interaktif.
+- Media peraga struktur bangunan tahan gempa & jalur evakuasi.`,
+                badgeBg: 'bg-sleman-700'
+            },
+            {
+                id: 'PERGERAKAN_WANITA',
+                category: 'museum',
+                categoryLabel: 'Museum Edukasi',
+                kapanewon: 'Depok',
+                title: 'Museum Pergerakan Wanita',
+                location: 'Caturtunggal, Depok, Sleman, Yogyakarta',
+                lat: -7.7820,
+                lng: 110.3920,
+                shortDesc: 'Museum Pergerakan Wanita Indonesia didirikan untuk memperingati, mendokumentasikan, dan mengabadikan peran penting serta perjuangan kaum perempuan Indonesia.',
+                fullDesc: `Pembangunan kompleks monumen ini difungsikan untuk mengenang peristiwa bersejarah Kongres Perempuan Indonesia Pertama yang diselenggarakan pada 22–26 Desember 1928 di Yogyakarta.
+Museum ini tidak menyelenggarakan ritual adat tradisional keagamaan. Namun, kompleks museum ini menjadi pusat perayaan nasional Hari Ibu setiap tanggal 22 Desember dengan upacara resmi kenegaraan, ziarah, pameran kultural, serta lokakarya edukatif.`,
+                rules: `1. Dilarang Menyentuh Dokumen Kertas dan Pakaian Pejuang.
+2. Dilarang Menggunakan Lampu Kilat Kamera.
+3. Dilarang Membawa Makanan & Minuman ke Ruang Pameran.`,
+                collections: `- Mesin Ketik Kuno Remington Portable Model 5 buatan tokoh emansipasi wanita Ibu Sri Mangunsarkoro.
+- Piala Kartini (1957) orisinil peninggalan Ketua Kongres Perempuan I R.A. Soekonto.
+- Mesin Jahit Vintage & Alat Memasak Kuno pelatihan wanita era 1950-an.
+- Timbangan Surat Internasional (1956) sumbangan wanita Indonesia di Suriname.
+- Dokumen Kertas Kuno Seruan Dharma Bakti (1954).
+- Relief Sejarah & Foto Hitam-Putih kronologi pergerakan perempuan di Pendopo Joglo Balai Shinta.`,
+                badgeBg: 'bg-sleman-700'
+            },
+            {
+                id: 'PALEOANTROPOLOGI_UGM',
+                category: 'museum',
+                categoryLabel: 'Museum Edukasi',
+                kapanewon: 'Mlati',
+                title: 'Museum Bio-Paleoantropologi UGM',
+                location: 'Sinduadi, Mlati, Sleman, Yogyakarta',
+                lat: -7.7681,
+                lng: 110.3734,
+                shortDesc: 'Museum khusus pendidikan dan rujukan ilmiah evolusi biologis manusia yang didirikan pada tahun 1986 atas gagasan Prof. Dr. Teuku Jacob.',
+                fullDesc: `Museum Bio-Paleoantropologi UGM berada di bawah naungan Fakultas Kedokteran, Kesehatan Masyarakat, dan Keperawatan (FK-KMK) UGM. Fungsinya adalah memberikan edukasi mendalam mengenai evolusi biologis manusia, variasi fisik manusia modern, serta perubahan ekosistem bumi dari masa ke masa.`,
+                rules: `1. Dilarang Keras Menyentuh Fosil atau Spesimen Asli.
+2. Dilarang Menggunakan Lampu Kilat Kamera.
+3. Dilarang Membawa Makanan dan Minuman.
+4. Dilarang Membuat Kegaduhan.`,
+                collections: `- Replika Fosil Manusia Purba
+- Artefak Batu Prasejarah (Paleolitikum)
+- Fosil Vertebrata & Fauna Purba
+- Koleksi Tulang Sub-Recent`,
+                badgeBg: 'bg-sleman-700'
+            },
+            {
+                id: 'MUSEUM_UII',
+                category: 'museum',
+                categoryLabel: 'Museum Edukasi',
+                kapanewon: 'Ngemplak',
+                title: 'Museum Universitas Islam Indonesia (UII)',
+                location: 'Umbulmartani, Ngemplak, Sleman, Yogyakarta',
+                lat: -7.6881,
+                lng: 110.4140,
+                shortDesc: 'Museum akademik yang melestarikan memori perjuangan berdirinya UII sekaligus mengelola situs arkeologi Candi Kimpulan.',
+                fullDesc: `Museum Universitas Islam Indonesia (UII) didirikan untuk melestarikan memori perjuangan berdirinya kampus nasional pertama di Indonesia sekaligus mengelola situs arkeologi yang ditemukan di dalam area perpustakaan utama kampus.`,
+                rules: `1. Dilarang memakai pakaian terbuka.
+2. Dilarang Menyentuh Struktur Batu Candi & Koleksi Kuno.
+3. Dilarang Membuat Kegaduhan.
+4. Dilarang Membawa Makanan & Minuman.`,
+                collections: `- Situs Candi Kimpulan (Candi Pustakasala): Reruntuhan candi Hindu abad ke-9 masehi era Mataram Kuno dengan lingga-yoni serta arca Ganesha.
+- Artefak Ekskavasi Candi: Kotak pripih kuno serta lempengan emas dan perak peninggalan ritual masa lampau.
+- Memorabilia KH. Abdul Kahar Muzakkir: Benda bersejarah asli Rektor Pertama UII sekaligus tokoh perumus Piagam Jakarta.
+- Kereta Dinas Rektor Pertama: Kendaraan dinas klasik Prof. K.H. Abdul Kahar Muzakkir.
+- Peralatan Administrasi Jadul: Mesin ketik manual kuno, komputer generasi awal, serta mesin hitung mekanis sejak tahun 1960-an.`,
+                badgeBg: 'bg-sleman-700'
+            },
+            {
+                id: 'PAHLAWAN_PANCASILA',
+                category: 'museum',
+                categoryLabel: 'Museum Edukasi',
+                kapanewon: 'Depok',
+                title: 'Museum Monumen Pahlawan Pancasila',
+                location: 'Condongcatur, Depok, Sleman, Yogyakarta',
+                lat: -7.7551,
+                lng: 110.3923,
+                shortDesc: 'Museum dan monumen peringatan sejarah sarana edukasi kebangsaan dan penghormatan atas pengorbanan para perwira militer di Yogyakarta.',
+                fullDesc: `Museum Monumen Pahlawan Pancasila berfungsi sebagai sarana edukasi kebangsaan, pengingat bahaya disintegrasi bangsa, serta penghormatan atas pengorbanan para perwira militer dalam mempertahankan ideologi Pancasila di Yogyakarta. Kompleks lapangan monumen ini menjadi pusat utama Peringatan Hari Kesaktian Pancasila tingkat provinsi setiap tanggal 1 Oktober.`,
+                rules: `1. Dilarang Melempar Benda ke Dalam Lubang Kentungan.
+2. Dilarang Menyentuh Pakaian Dinas & Almari Kaca.
+3. Dilarang Membuat Kegaduhan / Bercanda Berlebihan.`,
+                collections: `- Lubang Kentungan Asli
+- Pakaian Dinas & Atribut Militer Orisinil
+- Patung Setengah Badan & Dokumentasi Foto
+- Duplikat Kendaraan Penculikan
+- Gedung Koleksi Khusus (Eks-Markas Batalyon L)`,
+                badgeBg: 'bg-sleman-700'
+            },
+            {
+                id: 'MGTM_UPN',
+                category: 'museum',
+                categoryLabel: 'Museum Edukasi',
+                kapanewon: 'Depok',
+                title: 'Museum Geoteknologi Mineral (MGTM) UPN',
+                location: 'Caturtunggal, Depok, Sleman, Yogyakarta',
+                lat: -7.7725,
+                lng: 110.4085,
+                shortDesc: 'Museum akademik ilmu kebumian, geologi, pertambangan, dan perminyakan yang diresmikan pada 27 Februari 1988.',
+                fullDesc: `Museum Geoteknologi Mineral (MGTM) UPN "Veteran" Yogyakarta adalah museum khusus akademik yang berfokus pada ilmu kebumian, geologi, pertambangan, dan perminyakan. Diresmikan oleh Menhankam RI Jenderal (Purn.) Poniman pada 27 Februari 1988 atas prakarsa Prof. Drs. H.R. Bambang Soeroto.`,
+                rules: `1. Dilarang Keras Merusak atau Mengubah Posisi Etalase Maket.
+2. Dilarang Menyentuh Spesimen Batuan dan Fosil Tertentu.
+3. Dilarang Membawa Makanan & Minuman.`,
+                collections: `- Replika Fosil Trilobit & Crinoid (Berumur 570–230 juta tahun yang lalu).
+- Fosil Kepala Gajah Purba Mastodon (Berusia ~3 juta tahun era Pleistosen).
+- Batu Amethyst Kuno (Kecubung Ungu) & Batu Giok Hijau.
+- Replika Fosil Manusia Purba Sangiran (Homo erectus).
+- Koleksi Artefak Budaya Prasejarah (Kapak Genggam & Alat Serpih).
+- Monolit Profil Tanah Kuno Orisinil (Vertisol, Andisol, Alfisol).`,
+                badgeBg: 'bg-sleman-700'
+            },
+            {
+                id: 'ANAIA_ALISHA',
+                category: 'museum',
+                categoryLabel: 'Museum Edukasi',
+                kapanewon: 'Pakem',
+                title: 'Museum Anaia & Alisha',
+                location: 'Hargobinangun, Pakem, Sleman, Yogyakarta',
+                lat: -7.6185,
+                lng: 110.4211,
+                shortDesc: 'Museum pelestarian, edukasi, dan promosi kekayaan seni, rempah, serta busana Nusantara kepada masyarakat luas.',
+                fullDesc: `Museum Anaia & Alisha didirikan sebagai wadah pelestarian, edukasi, dan promosi kekayaan budaya Nusantara. Menyajikan galeri edukatif interaktif seputar sejarah rempah, keanekaragaman mineral, hingga koleksi busana adat dari seluruh penjuru daerah.`,
+                rules: `1. Dilarang merusak infografis & instalasi kain.
+2. Dilarang membawa makanan dan minuman ke area galeri pameran.`,
+                collections: `- Galeri Jalur Rempah Nusantara
+- Galeri Kekayaan Mineral Kebumian
+- Museum Busana Adat Nusantara
+- Galeri Seni Kontemporer & Pala Pala Resto`,
+                badgeBg: 'bg-sleman-700'
+            },
+            {
+                id: 'DAPUR_TRADISIONAL',
+                category: 'museum',
+                categoryLabel: 'Museum Edukasi',
+                kapanewon: 'Turi',
+                title: 'Museum Dapur Tradisional',
+                location: 'Donokerto, Turi, Sleman, Yogyakarta',
+                lat: -7.6385,
+                lng: 110.3802,
+                shortDesc: 'Museum khusus pelestarian ragam perkakas memasak dan budaya kuliner tradisional Jawa masa lalu.',
+                fullDesc: `Museum Dapur Tradisional melestarikan ragam peralatan memasak tradisional seperti tungku pawon, luweng, kuali gerabah, kukusan, dan gentong air kuno yang digunakan oleh masyarakat pedesaan Jawa dari generasi ke generasi.`,
+                rules: `1. Dilarang merusak atau menggeser peralatan gerabah dan kayu antik.
+2. Dilarang menyalakan api sembarangan di sekitar pawon pameran.
+3. Dilarang membawa makanan & minuman dari luar ke area galeri.`,
+                collections: `- Koleksi tungku kayu bakar (pawon & luweng).
+- Kuali gerabah tanah liat kuno & gentong penyimpan air suci.
+- Alat penumbuk padi lesung & lumpang batu.
+- Peralatan dapur tradisional bambu (kukusan, erok-erok, dan tampah).`,
+                badgeBg: 'bg-sleman-700'
+            },
+            {
+                id: 'MONJALI',
+                category: 'museum',
+                categoryLabel: 'Museum Edukasi',
+                kapanewon: 'Ngaglik',
+                title: 'Monumen Jogja Kembali (Monjali)',
+                location: 'Jl. Ring Road Utara, Sariharjo, Ngaglik, Sleman',
+                lat: -7.7493,
+                lng: 110.3696,
+                shortDesc: 'Museum monumen berbentuk kerucut yang merekam sejarah perjuangan kemerdekaan RI dan penarikan tentara Belanda dari Yogyakarta tahun 1949.',
+                rules: `1. Dilarang mencoret-coret (vandalisme) relief batu monumen atau diorama pameran.
+2. Menjaga kebersihan area taman outdoor dan kolam museum.
+3. Dilarang memanjat pagar pembatas diorama sejarah.`,
+                fullDesc: `Monjali didirikan untuk memperingati peristiwa sejarah direbutnya kembali ibu kota Yogyakarta.
+
+Fasilitas: 10 diorama ruang sejarah, nama pahlawan yang gugur terukir di dinding, serta Garbha Graha untuk mendoakan para pejuang bangsa.`,
+                badgeBg: 'bg-sleman-700'
+            },
+            {
+                id: 'AFFANDI',
+                category: 'museum',
+                categoryLabel: 'Museum Edukasi',
+                kapanewon: 'Depok',
+                title: 'Museum Affandi',
+                location: 'Jl. Laksda Adisucipto No.167, Caturtunggal, Depok, Sleman',
+                lat: -7.7828,
+                lng: 110.3963,
+                shortDesc: 'Museum seni rupa tepi Sungai Gajahwong tempat menyimpan ribuan lukisan maestro ekspresionis dunia Affandi beserta galeri keluarga.',
+                rules: `1. Dilarang menyentuh permukaan lukisan karya seni (Jaga jarak aman minimal 1 meter).
+2. DILARAANG menggunakan lampu kilat (flash) kamera saat mengambil foto lukisan.
+3. Dilarang membawa makanan dan minuman di dalam ruangan galeri lukisan.`,
+                fullDesc: `Museum Affandi menampilkan perjalanan hidup dan mahakarya lukisan sang maestro ekspresionis Indonesia. Arsitektur atap museum unik berbentuk daun pisang yang dirancang sendiri oleh Affandi.`,
+                badgeBg: 'bg-sleman-700'
+            },
+            {
+                id: 'PRAMBANAN',
+                category: 'museum',
+                categoryLabel: 'Museum Edukasi',
+                kapanewon: 'Prambanan',
+                title: 'Candi Prambanan & Museum Arkeologi',
+                location: 'Bokoharjo, Kapanewon Prambanan, Sleman, Yogyakarta',
+                lat: -7.7520,
+                lng: 110.4914,
+                shortDesc: 'Kompleks candi Hindu terbesar di Indonesia warisan dunia UNESCO abad ke-9 yang dipersembahkan untuk Trimurti (Brahma, Wisnu, Siwa).',
+                rules: `1. Wajib mengenakan kain kain/sarung pelataran candi yang disediakan di pintu masuk.
+2. Dilarang memanjat batu candi atau duduk di atas struktur arca bersejarah.
+3. Dilarang mencoret-coret relief (vandalisme) dan selalu membuang sampah pada tempatnya.`,
+                fullDesc: `Candi Prambanan adalah mahakarya arsitektur Hindu kuno dengan candi utama setinggi 47 meter. Di dalam kompleks terdapat Museum Arkeologi Prambanan yang menyimpan arca, perhiasan emas kuno, dan sistem pemugaran candi.`,
+                badgeBg: 'bg-sleman-700'
+            }
+        ];
+
+        /*
+         * Question Bank for Quiz
+         */
+        const questionBank = [
+            {
+                q: "Apa nama makanan tiruan yang disembelih pada Upacara Adat Bekakak di Gamping?",
+                options: ["Tepung ketan bentuk sepasang pengantin isi gula jawa", "Kue apem warna putih", "Tumpeng nasi gurih", "Ketupat janur kuning"],
+                answer: 0,
+                explanation: "Bekakak menggunakan sepasang tiruan pengantin dari tepung ketan yang diisi cairan gula jawa merah (juruh) sebagai simbol penyembelihan."
+            },
+            {
+                q: "Aturan penting apakah yang WAJIB dipatuhi pengunjung saat memasuki Museum Ullen Sentalu Kaliurang?",
+                options: ["Dilarang membuang sampah", "Dilarang mengambil foto/video di dalam galeri", "Wajib memakai sepatu olah raga", "Dilarang membawa tas belanja"],
+                answer: 1,
+                explanation: "Di Museum Ullen Sentalu, pengunjung DILARANG keras mengambil foto atau video di area dalam galeri pameran untuk menjaga eksklusivitas koleksi."
+            },
+            {
+                q: "Warna pakaian apakah yang DILARANG dipakai oleh pengunjung/peserta saat mengikuti ritual Labuhan Ageng Merapi?",
+                options: ["Merah tua", "Kuning emas", "Hijau muda (gadung)", "Hitam pekat"],
+                answer: 2,
+                explanation: "Warna hijau muda (gadung) merupakan pantangan tradisional kain keraton yang dilarang dikenakan saat menghadiri ritual Labuhan Merapi."
+            },
+            {
+                q: "Tradisi Sebar Apem diselenggarakan setiap bulan Sapar di wilayah Kapanewon mana?",
+                options: ["Kapanewon Ngemplak (Pondok Wonolelo)", "Kapanewon Gamping", "Kapanewon Seyegan", "Kapanewon Prambanan"],
+                answer: 0,
+                explanation: "Saparan Wonolelo diselenggarakan di Dusun Pondok Wonolelo, Kalurahan Widodomartani, Kapanewon Ngemplak, Sleman."
+            },
+            {
+                q: "Tradisi 'Tedhak Siten' dalam siklus hidup Jawa merupakan ritual khusus untuk peristiwa apa?",
+                options: ["Kehamilan 7 bulan", "Anak pertama kali melangkah menapakkan kaki ke bumi", "Pernikahan adat", "Peringatan 1000 hari kematian"],
+                answer: 1,
+                explanation: "Tedhak Siten (Tedhak = menapak, Siten = tanah) adalah ritual adat saat anak balita usia 8 bulan Jawa untuk pertama kalinya menapakkan kaki ke tanah."
+            },
+            {
+                q: "Apakah fungsi utama dari Museum Gunungapi Merapi (MGM) di Pakem?",
+                options: ["Pusat hiburan kolam renang", "Pusat edukasi vulkanologi dan kebencanaan geologi", "Pameran busana batik kuno", "Museum kerajinan perak"],
+                answer: 1,
+                explanation: "Museum Gunungapi Merapi (MGM) didirikan sebagai pusat edukasi vulkanologi, kebencanaan geologi, dan mitigasi bencana erupsi gunung api."
+            },
+            {
+                q: "Di manakah lokasi mata air sakral 'Tuk Si Bedug' yang muncul dari kisah sejarah tongkat Sunan Kalijaga?",
+                options: ["Kalurahan Margodadi, Kapanewon Seyegan", "Kalurahan Kaliurang, Kapanewon Pakem", "Cangkringan", "Depok"],
+                answer: 0,
+                explanation: "Upacara Adat Tuk Si Bedug bertempat di Kalurahan Margodadi, Kapanewon Seyegan, Sleman."
+            },
+            {
+                q: "Manakah aturan larangan yang benar di Museum Affandi Depok Sleman?",
+                options: ["Dilarang menggunakan flash kamera saat memfoto lukisan", "Dilarang berbicara dengan pemandu", "Dilarang memakai sandal", "Dilarang meminum air mineral"],
+                answer: 0,
+                explanation: "Di Museum Affandi, pengunjung dilarang menyentuh lukisan dan DILARANG menggunakan flash kamera karena pancaran lampu kilat dapat merusak pigmen warna lukisan maestro."
+            }
+        ];
+
+        // Global State
+        let currentCategory = 'all';
+        let currentKapanewon = 'all';
+        let searchQuery = '';
+        let viewMode = 'grid';
+        let itinerary = JSON.parse(localStorage.getItem('sembada_itinerary')) || [];
+        let selectedModalItem = null;
+
+        // Audio Engine State
+        let activeAudioUtterance = null;
+        let selectedVoice = null;
+        let currentRate = 1.0;
+        let isAudioPaused = false;
+
+        // Quiz State
+        let currentQuestions = [];
+        let quizIndex = 0;
+        let quizScore = 0;
+
+        window.onload = function() {
+            renderCards();
+            updateItineraryBadge();
+            updateQuickStats();
+            initVoiceEngine();
+        };
+
+        /*
+         * AI Voice Synthesis Engine Setup
+         */
+        function initVoiceEngine() {
+            if ('speechSynthesis' in window) {
+                const loadVoices = () => {
+                    const voices = window.speechSynthesis.getVoices();
+                    // Search for Indonesian voice
+                    selectedVoice = voices.find(v => v.lang === 'id-ID' || v.lang.startsWith('id') || v.name.includes('Indonesian')) || null;
+                };
+
+                loadVoices();
+                if (speechSynthesis.onvoiceschanged !== undefined) {
+                    speechSynthesis.onvoiceschanged = loadVoices;
+                }
+            }
+        }
+
+        // Museum Tour Welcome Chime Sound (Web Audio API)
+        function playChimeSound() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+                
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.15); // E5
+
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } catch (e) {
+                // AudioContext fallback
+            }
+        }
+
+        function updateQuickStats() {
+            const countMuseum = edutourData.filter(d => d.category === 'museum').length;
+            const countTradisi = edutourData.filter(d => d.category === 'tradisi').length;
+            const countUpacara = edutourData.filter(d => d.category === 'upacara').length;
+            
+            document.getElementById('statMuseum').innerText = countMuseum;
+            document.getElementById('statTradisi').innerText = countTradisi;
+            document.getElementById('statUpacara').innerText = countUpacara;
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-sleman-800', 'text-white');
+                btn.classList.add('bg-slate-100', 'text-slate-700');
+            });
+
+            const activeBtn = document.getElementById(`tab-${cat}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active', 'bg-sleman-800', 'text-white');
+                activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
+            }
+
+            renderCards();
+        }
+
+        function filterKapanewon(kap) {
+            currentKapanewon = kap;
+            renderCards();
+        }
+
+        function handleSearch(val) {
+            searchQuery = val.toLowerCase().trim();
+            renderCards();
+        }
+
+        function resetSearch() {
+            searchQuery = '';
+            currentCategory = 'all';
+            currentKapanewon = 'all';
+            document.getElementById('searchInput').value = '';
+            document.getElementById('kapanewonFilter').value = 'all';
+            filterCategory('all');
+        }
+
+        function toggleView(mode) {
+            viewMode = mode;
+            const btnGrid = document.getElementById('btnGrid');
+            const btnList = document.getElementById('btnList');
+            
+            if (mode === 'grid') {
+                btnGrid.className = 'p-1.5 rounded-lg bg-white text-sleman-700 shadow-xs text-xs';
+                btnList.className = 'p-1.5 rounded-lg text-slate-600 hover:text-slate-900 text-xs';
+            } else {
+                btnList.className = 'p-1.5 rounded-lg bg-white text-sleman-700 shadow-xs text-xs';
+                btnGrid.className = 'p-1.5 rounded-lg text-slate-600 hover:text-slate-900 text-xs';
+            }
+            renderCards();
+        }
+
+        function renderCards() {
+            const container = document.getElementById('cardsContainer');
+            const emptyState = document.getElementById('emptyState');
+            container.innerHTML = '';
+
+            const filtered = edutourData.filter(item => {
+                const matchCat = (currentCategory === 'all' || item.category === currentCategory);
+                const matchKap = (currentKapanewon === 'all' || item.kapanewon === currentKapanewon);
+                const matchSearch = searchQuery === '' || 
+                    item.title.toLowerCase().includes(searchQuery) ||
+                    item.shortDesc.toLowerCase().includes(searchQuery) ||
+                    item.location.toLowerCase().includes(searchQuery) ||
+                    item.rules.toLowerCase().includes(searchQuery);
+
+                return matchCat && matchKap && matchSearch;
+            });
+
+            document.getElementById('resultCount').innerText = `Menampilkan ${filtered.length} dari ${edutourData.length} koleksi di Sleman`;
+
+            if (filtered.length === 0) {
+                container.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            container.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            if (viewMode === 'grid') {
+                container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
+            } else {
+                container.className = "flex flex-col gap-4";
+            }
+
+            filtered.forEach(item => {
+                let cardHTML = '';
+                if (viewMode === 'grid') {
+                    cardHTML = `
+                        <div class="bg-white rounded-2xl border border-slate-200/80 hover:border-sleman-500 hover:shadow-lg transition-all duration-200 flex flex-col overflow-hidden group">
+                            <div class="p-5 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between gap-2 mb-2">
+                                        <span class="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider text-white ${item.badgeBg}">
+                                            ${item.categoryLabel}
+                                        </span>
+                                        <span class="text-[11px] font-semibold text-sleman-700 bg-sleman-50 px-2 py-0.5 rounded-md">
+                                            <i class="fa-solid fa-location-dot"></i> Kp. ${item.kapanewon}
+                                        </span>
+                                    </div>
+
+                                    <h3 class="font-extrabold text-slate-900 text-base group-hover:text-sleman-700 transition-colors line-clamp-1">
+                                        ${item.title}
+                                    </h3>
+
+                                    <p class="text-xs text-slate-500 mt-1 mb-3 flex items-center gap-1">
+                                        <i class="fa-solid fa-map-pin text-slate-400"></i> ${item.location}
+                                    </p>
+
+                                    <!-- Pengertian Singkat Box -->
+                                    <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 mb-3">
+                                        <span class="text-[10px] font-bold text-sleman-800 uppercase tracking-wider block mb-0.5">
+                                            <i class="fa-solid fa-lightbulb"></i> Pengertian Singkat:
+                                        </span>
+                                        <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                                            ${item.shortDesc}
+                                        </p>
+                                    </div>
+
+                                    <!-- Aturan Highlight -->
+                                    <div class="bg-amber-50/70 p-2.5 rounded-xl border border-amber-200/60 mb-4">
+                                        <span class="text-[10px] font-bold text-amber-800 uppercase tracking-wider block mb-0.5">
+                                            <i class="fa-solid fa-triangle-exclamation"></i> Aturan / Larangan Utama:
+                                        </span>
+                                        <p class="text-[11px] text-amber-900 line-clamp-2 leading-snug">
+                                            ${item.rules}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="pt-3 border-t border-slate-100">
+                                    <button onclick="openDetailModal('${item.id}')" class="w-full py-2 bg-sleman-50 hover:bg-sleman-100 text-sleman-800 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all">
+                                        <span>Detail & Audio AI</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    cardHTML = `
+                        <div class="bg-white rounded-2xl p-4 border border-slate-200/80 hover:border-sleman-500 hover:shadow-md transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase text-white ${item.badgeBg}">
+                                        ${item.categoryLabel}
+                                    </span>
+                                    <span class="text-[11px] font-semibold text-sleman-700 bg-sleman-50 px-2 py-0.5 rounded">
+                                        Kp. ${item.kapanewon}
+                                    </span>
+                                </div>
+                                <h3 class="font-extrabold text-slate-900 text-base">${item.title}</h3>
+                                <p class="text-xs text-slate-600 mt-1 line-clamp-1"><strong class="text-sleman-800">Pengertian:</strong> ${item.shortDesc}</p>
+                                <p class="text-xs text-amber-800 mt-1 line-clamp-1"><strong class="text-amber-900">Aturan:</strong> ${item.rules}</p>
+                            </div>
+                            <div class="flex items-center shrink-0 w-full md:w-auto justify-end border-t md:border-t-0 pt-2 md:pt-0 border-slate-100">
+                                <button onclick="openDetailModal('${item.id}')" class="px-4 py-2 bg-sleman-50 hover:bg-sleman-100 text-sleman-800 font-bold text-xs rounded-xl flex items-center gap-1.5 transition-all">
+                                    <span>Detail & Audio AI</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+                container.innerHTML += cardHTML;
+            });
+        }
+
+        function openDetailModal(id) {
+            const item = edutourData.find(d => d.id === id);
+            if (!item) return;
+            selectedModalItem = item;
+
+            document.getElementById('modalTitle').innerText = item.title;
+            document.getElementById('modalLocation').innerHTML = `<i class="fa-solid fa-location-dot"></i> <span>${item.location} (Kapanewon ${item.kapanewon})</span>`;
+            document.getElementById('modalCategoryBadge').innerText = item.categoryLabel;
+            document.getElementById('modalCategoryBadge').className = `inline-block px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider text-white mb-2 ${item.badgeBg}`;
+
+            document.getElementById('modalShortDesc').innerText = item.shortDesc;
+            document.getElementById('modalRules').innerText = item.rules;
+            document.getElementById('modalDescription').innerText = item.fullDesc;
+
+            const collectionsContainer = document.getElementById('modalCollectionContainer');
+            if (item.collections) {
+                collectionsContainer.classList.remove('hidden');
+                document.getElementById('modalCollections').innerText = item.collections;
+            } else {
+                collectionsContainer.classList.add('hidden');
+            }
+
+            // Direct Google Maps location link
+            document.getElementById('btnGmapsModal').href = `https://www.google.com/maps?q=${item.lat},${item.lng}`;
+
+            // Update itinerary button state
+            updateModalItineraryBtn();
+
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            stopAudioSpeak();
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        function updateModalItineraryBtn() {
+            if (!selectedModalItem) return;
+            const isIn = itinerary.some(i => i.id === selectedModalItem.id);
+            const btn = document.getElementById('btnItineraryToggle');
+            if (isIn) {
+                btn.className = "px-3.5 py-2 bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-all";
+                btn.innerHTML = `<i class="fa-solid fa-trash"></i> <span>Hapus dari Rencana</span>`;
+            } else {
+                btn.className = "px-3.5 py-2 bg-sleman-100 hover:bg-sleman-200 text-sleman-800 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-all";
+                btn.innerHTML = `<i class="fa-solid fa-plus"></i> <span>Tambah ke Rencana</span>`;
+            }
+        }
+
+        function toggleItineraryFromModal() {
+            if (selectedModalItem) {
+                toggleItinerary(selectedModalItem.id);
+                updateModalItineraryBtn();
+            }
+        }
+
+        /*
+         * AI Museum Tour Audio Narration Engine
+         */
+        function setAudioRate(rate) {
+            currentRate = rate;
+            ['rate08', 'rate10', 'rate12'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.className = "px-1.5 py-0.5 rounded text-slate-300 hover:text-white";
+            });
+            const activeEl = document.getElementById(`rate${Math.round(rate * 10)}`);
+            if (activeEl) activeEl.className = "px-1.5 py-0.5 rounded bg-sleman-600 font-bold text-white";
+
+            if (window.speechSynthesis && window.speechSynthesis.speaking) {
+                // Restart with new rate if speaking
+                toggleAudioSpeak(true);
+            }
+        }
+
+        function toggleAudioSpeak(forceRestart = false) {
+            if (!selectedModalItem) return;
+
+            if (window.speechSynthesis.speaking && !forceRestart) {
+                if (isAudioPaused) {
+                    window.speechSynthesis.resume();
+                    isAudioPaused = false;
+                    document.getElementById('btnAudioPause').innerHTML = `<i class="fa-solid fa-pause"></i> <span>Jeda</span>`;
+                    document.getElementById('audioWaveVisualizer').classList.remove('hidden');
+                } else {
+                    pauseResumeAudio();
+                }
+                return;
+            }
+
+            stopAudioSpeak();
+            playChimeSound();
+
+            // Construct Museum AI Tour Guide Script
+            const cleanRules = selectedModalItem.rules.replace(/\n/g, ', ');
+            const script = `Selamat datang di ${selectedModalItem.title}, Kapanewon ${selectedModalItem.kapanewon}, Kabupaten Sleman. Saya adalah Pemandu Edukasi AI Anda. ${selectedModalItem.shortDesc}. Mengenai aturan kunjungan, mohon perhatikan: ${cleanRules}. Selamat menikmati kunjungan edukasi Anda!`;
+
+            const utterance = new SpeechSynthesisUtterance(script);
+            utterance.lang = 'id-ID';
+            utterance.rate = currentRate;
+            utterance.pitch = 1.0;
+
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+            }
+
+            utterance.onstart = () => {
+                document.getElementById('btnAudioLabel').innerText = "Sedang Memandu";
+                document.getElementById('btnAudioPause').classList.remove('hidden');
+                document.getElementById('btnAudioStop').classList.remove('hidden');
+                document.getElementById('audioWaveVisualizer').classList.remove('hidden');
+                isAudioPaused = false;
+            };
+
+            utterance.onend = () => resetAudioUI();
+            utterance.onerror = () => resetAudioUI();
+
+            activeAudioUtterance = utterance;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function pauseResumeAudio() {
+            if (!window.speechSynthesis) return;
+
+            if (window.speechSynthesis.speaking) {
+                if (isAudioPaused) {
+                    window.speechSynthesis.resume();
+                    isAudioPaused = false;
+                    document.getElementById('btnAudioPause').innerHTML = `<i class="fa-solid fa-pause"></i> <span>Jeda</span>`;
+                    document.getElementById('audioWaveVisualizer').classList.remove('hidden');
+                } else {
+                    window.speechSynthesis.pause();
+                    isAudioPaused = true;
+                    document.getElementById('btnAudioPause').innerHTML = `<i class="fa-solid fa-play"></i> <span>Lanjut</span>`;
+                    document.getElementById('audioWaveVisualizer').classList.add('hidden');
+                }
+            }
+        }
+
+        function stopAudioSpeak() {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+            resetAudioUI();
+        }
+
+        function resetAudioUI() {
+            isAudioPaused = false;
+            document.getElementById('btnAudioLabel').innerText = "Putar Tur AI";
+            document.getElementById('btnAudioPause').classList.add('hidden');
+            document.getElementById('btnAudioStop').classList.add('hidden');
+            document.getElementById('audioWaveVisualizer').classList.add('hidden');
+            document.getElementById('btnAudioPause').innerHTML = `<i class="fa-solid fa-pause"></i> <span>Jeda</span>`;
+        }
+
+        function toggleItinerary(id) {
+            const index = itinerary.findIndex(i => i.id === id);
+            if (index > -1) {
+                itinerary.splice(index, 1);
+            } else {
+                const item = edutourData.find(d => d.id === id);
+                if (item) itinerary.push(item);
+            }
+            localStorage.setItem('sembada_itinerary', JSON.stringify(itinerary));
+            updateItineraryBadge();
+            renderCards();
+        }
+
+        function updateItineraryBadge() {
+            document.getElementById('itineraryBadge').innerText = itinerary.length;
+        }
+
+        function openItineraryModal() {
+            renderItineraryList();
+            document.getElementById('itineraryModal').classList.remove('hidden');
+        }
+
+        function closeItineraryModal() {
+            document.getElementById('itineraryModal').classList.add('hidden');
+        }
+
+        function renderItineraryList() {
+            const container = document.getElementById('itineraryListContainer');
+            if (itinerary.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-slate-400 text-xs">
+                        <i class="fa-solid fa-route text-3xl mb-2 text-slate-300"></i>
+                        <p>Belum ada destinasi yang ditambahkan ke rencana kunjungan.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = itinerary.map((item, idx) => `
+                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-6 h-6 rounded-full bg-sleman-700 text-white font-bold flex items-center justify-center text-[10px]">
+                            ${idx + 1}
+                        </span>
+                        <div>
+                            <strong class="text-slate-800 block">${item.title}</strong>
+                            <span class="text-[10px] text-slate-500">Kp. ${item.kapanewon}</span>
+                        </div>
+                    </div>
+                    <button onclick="toggleItinerary('${item.id}'); renderItineraryList();" class="text-rose-600 hover:text-rose-800 p-1">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function clearItinerary() {
+            itinerary = [];
+            localStorage.setItem('sembada_itinerary', JSON.stringify(itinerary));
+            updateItineraryBadge();
+            renderItineraryList();
+            renderCards();
+        }
+
+        function copyItineraryText() {
+            if (itinerary.length === 0) return;
+            let text = "📋 *RENCANA KUNJUNGAN WISATA EDUKASI SLEMAN SEMBADA*\n\n";
+            itinerary.forEach((item, idx) => {
+                text += `${idx + 1}. ${item.title}\n   • Kapanewon: ${item.kapanewon}\n   • Aturan Utama: ${item.rules.split('\n')[0]}\n\n`;
+            });
+            
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            alert('Rencana wisata berhasil disalin ke papan klip!');
+        }
+
+        function openMultiGmapsRoute() {
+            if (itinerary.length === 0) return;
+            const destinationStr = itinerary.map(i => `${i.lat},${i.lng}`).join('/');
+            window.open(`https://www.google.com/maps/dir/${destinationStr}`, '_blank');
+        }
+
+        /*
+         * Randomized Cultural Quiz logic
+         */
+        function openQuizModal() {
+            const quizBody = document.getElementById('quizBody');
+            if (quizBody) {
+                quizBody.innerHTML = `
+                    <div class="flex justify-between items-center text-xs text-slate-500 font-bold mb-2">
+                        <span id="quizProgress">Pertanyaan 1 dari 5</span>
+                        <span id="quizScore" class="text-sleman-700">Skor: 0</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-1.5 mb-4">
+                        <div id="quizProgressBar" class="bg-amber-500 h-1.5 rounded-full w-1/5 transition-all"></div>
+                    </div>
+
+                    <h4 id="quizQuestion" class="font-bold text-slate-900 text-sm mb-4 leading-snug">
+                        Soal Kuis
+                    </h4>
+
+                    <div id="quizOptions" class="space-y-2"></div>
+
+                    <div id="quizFeedback" class="mt-4 p-3 rounded-xl text-xs hidden leading-relaxed"></div>
+                `;
+            }
+
+            const shuffled = [...questionBank].sort(() => 0.5 - Math.random());
+            currentQuestions = shuffled.slice(0, 5).map(qObj => {
+                const optionsWithIndex = qObj.options.map((opt, i) => ({ opt, isCorrect: i === qObj.answer }));
+                optionsWithIndex.sort(() => 0.5 - Math.random());
+
+                return {
+                    q: qObj.q,
+                    options: optionsWithIndex.map(o => o.opt),
+                    answer: optionsWithIndex.findIndex(o => o.isCorrect),
+                    explanation: qObj.explanation
+                };
+            });
+
+            quizIndex = 0;
+            quizScore = 0;
+            renderQuizQuestion();
+            document.getElementById('quizModal').classList.remove('hidden');
+        }
+
+        function closeQuizModal() {
+            document.getElementById('quizModal').classList.add('hidden');
+        }
+
+        function renderQuizQuestion() {
+            const qData = currentQuestions[quizIndex];
+            document.getElementById('quizProgress').innerText = `Pertanyaan ${quizIndex + 1} dari ${currentQuestions.length}`;
+            document.getElementById('quizScore').innerText = `Skor: ${quizScore}`;
+            document.getElementById('quizProgressBar').style.width = `${((quizIndex + 1) / currentQuestions.length) * 100}%`;
+
+            document.getElementById('quizQuestion').innerText = qData.q;
+            
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+            
+            const feedback = document.getElementById('quizFeedback');
+            feedback.classList.add('hidden');
+            document.getElementById('btnNextQuiz').classList.add('hidden');
+
+            qData.options.forEach((optText, i) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-3 rounded-xl border border-slate-200 hover:border-amber-500 hover:bg-amber-50 text-xs font-medium text-slate-800 transition-all";
+                btn.innerText = `${String.fromCharCode(65 + i)}. ${optText}`;
+                btn.onclick = () => selectQuizOption(i);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectQuizOption(selectedIdx) {
+            const qData = currentQuestions[quizIndex];
+            const optionsContainer = document.getElementById('quizOptions');
+            const buttons = optionsContainer.querySelectorAll('button');
+            const feedback = document.getElementById('quizFeedback');
+
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (selectedIdx === qData.answer) {
+                quizScore += 20;
+                buttons[selectedIdx].className = "w-full text-left p-3 rounded-xl bg-emerald-100 border border-emerald-500 text-xs font-bold text-emerald-900";
+                feedback.className = "mt-4 p-3 rounded-xl text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 block";
+                feedback.innerHTML = `<strong><i class="fa-solid fa-circle-check"></i> Benar!</strong> ${qData.explanation}`;
+            } else {
+                buttons[selectedIdx].className = "w-full text-left p-3 rounded-xl bg-rose-100 border border-rose-500 text-xs font-bold text-rose-900";
+                buttons[qData.answer].className = "w-full text-left p-3 rounded-xl bg-emerald-100 border border-emerald-500 text-xs font-bold text-emerald-900";
+                feedback.className = "mt-4 p-3 rounded-xl text-xs bg-rose-50 text-rose-800 border border-rose-200 block";
+                feedback.innerHTML = `<strong><i class="fa-solid fa-circle-xmark"></i> Kurang Tepat!</strong> Jawaban benar adalah <strong>${String.fromCharCode(65 + qData.answer)}</strong>.<br>${qData.explanation}`;
+            }
+
+            document.getElementById('quizScore').innerText = `Skor: ${quizScore}`;
+            document.getElementById('btnNextQuiz').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            quizIndex++;
+            if (quizIndex < currentQuestions.length) {
+                renderQuizQuestion();
+            } else {
+                const quizBody = document.getElementById('quizBody');
+                quizBody.innerHTML = `
+                    <div class="text-center py-6">
+                        <div class="w-16 h-16 mx-auto bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-3xl mb-3">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <h3 class="font-extrabold text-slate-900 text-lg">Kuis Selesai!</h3>
+                        <p class="text-xs text-slate-500 mt-1">Skor Akhir Anda:</p>
+                        <span class="text-3xl font-extrabold text-sleman-700 block my-2">${quizScore} / 100</span>
+                        <p class="text-xs text-slate-600 max-w-xs mx-auto">
+                            ${quizScore >= 80 ? 'Luar biasa! Anda sangat memahami warisan budaya dan aturan di Sleman.' : 'Bagus! Teruskan membaca pengertian dan aturan destinasi budaya Sleman Sembada.'}
+                        </p>
+                        <button onclick="openQuizModal()" class="mt-5 px-4 py-2 bg-sleman-700 text-white font-bold text-xs rounded-xl hover:bg-sleman-800">
+                            Coba Lagi (Soal Berbeda)
+                        </button>
+                    </div>
+                `;
+                document.getElementById('btnNextQuiz').classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
